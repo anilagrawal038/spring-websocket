@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Test App Using Spring 4 WebSocket</title>
+<script type="text/javascript">
+
+var ws;
+
+function setConnected(connected) {
+	document.getElementById('connect').disabled = connected;
+	document.getElementById('disconnect').disabled = !connected;
+	document.getElementById('info').style.visibility = connected ? 'visible' : 'hidden';
+	document.getElementById('greetings').innerHTML = '';
+}
+
+function connect() {
+	ws = new WebSocket('ws://localhost:8080/web/ws/test');
+	ws.onmessage = function(data){
+		showGreeting(data.data);
+	}
+	 setConnected(true);
+}
+
+function disconnect() {
+    if (ws != null) {
+        ws.close();
+    }
+    setConnected(false);
+    console.log("Disconnected");
+}
+
+function sendName() {
+    ws.send(document.getElementById('name').value);
+}
+
+function showGreeting(message) {
+	document.getElementById('greetings').innerHTML = document.getElementById('greetings').innerHTML+"    \n" + message;
+}
+</script>
+</head>
+<body>
+	<noscript>
+		<h2>Enable Java script and reload this page to run Websocket Demo</h2>
+	</noscript>
+	<h1>Test App Using Spring 4 WebSocket (Without STOMP & SockJS)</h1>
+	<div>
+		<div>
+			<button id="connect" onclick="connect();">Connect</button>
+			<button id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>
+			<br />
+			<br />
+		</div>
+		<div id="info">
+			<label>Name:</label><input type="text" id="name" /><br />
+			<br />
+			<button id="sendNum" onclick="sendName();">Send Name</button>
+			<p id="greetings"></p>
+		</div>
+	</div>
+</body>
+</html>
